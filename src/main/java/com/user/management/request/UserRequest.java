@@ -62,12 +62,12 @@ public class UserRequest {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public @Email @NotBlank(message = "Email Name cannot be null") String getEmailId() {
         return emailId;
     }
 
-    public void setEmail(String email) {
-        this.emailId = email;
+    public void setEmailId(@Email @NotBlank(message = "Email Name cannot be null") String emailId) {
+        this.emailId = emailId;
     }
 
     public String getPhoneNo() {

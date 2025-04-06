@@ -32,7 +32,7 @@ public class UserUtils {
     user.setFirstName(userRequest.getFirstName());
     user.setLastName(userRequest.getLastName());
     user.setAddress(userRequest.getAddress());
-    user.setEmail(userRequest.getEmail());
+    user.setEmail(userRequest.getEmailId());
     user.setPhoneNo(userRequest.getPhoneNo());
     user.setStatus(UserStatus.PENDING);
     try {

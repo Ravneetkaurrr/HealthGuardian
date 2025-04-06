@@ -57,7 +57,7 @@ public class  UserController {
 
   /// login-by-otp/ravneetkr28@gmail.com
   @PostMapping(value = "/otp-by-emailId/{emailId}") //login with otp
-  public ResponseEntity<UserResponse> generateOtpByEmailId(@NonNull @PathVariable String emailId) {
+  public ResponseEntity<UserResponse> generateOtpByEmailId( @PathVariable String emailId) {
     return new ResponseEntity<>(userService.generateOtpByEmailId(emailId), HttpStatus.OK);
   }
 

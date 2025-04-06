@@ -7,7 +7,6 @@ import com.user.management.request.UserRequest;
 import com.user.management.request.UserStatusRequest;
 import com.user.management.response.UserResponse;
 import java.io.IOException;
-//import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
@@ -34,5 +33,4 @@ public interface UserService {
 
   UserResponse deleteProfilePicture(String emailId);
 
-  //UserResponse loginByGmail(OAuth2AuthenticationToken token);
 }

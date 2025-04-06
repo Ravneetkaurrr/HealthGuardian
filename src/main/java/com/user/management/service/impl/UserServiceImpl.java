@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
   public UserResponse registerUser(UserRequest userRequest) throws IOException {
     UserResponse userResponse = new UserResponse();
     //validateUser(userRequest);
-    if (Objects.nonNull(userRepository.findByEmail(userRequest.getEmail()))
+    if (Objects.nonNull(userRepository.findByEmail(userRequest.getEmailId()))
         || Objects.nonNull(userRepository.findByPhoneNo(userRequest.getPhoneNo()))) {
       throw new ValidationException("Email or Phone number already in use");
     }
@@ -85,12 +85,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse loginUser(UserRequest userRequest) {
 
-    if (Objects.isNull(userRequest.getEmail()) || Objects.isNull(userRequest.getPassword())) {
+    if (Objects.isNull(userRequest.getEmailId()) || Objects.isNull(userRequest.getPassword())) {
       throw new IllegalArgumentException("Please enter valid emailId or password");
     }
 
     UserResponse userResponse = new UserResponse();
-    User user = userRepository.findByEmail(userRequest.getEmail());
+    User user = userRepository.findByEmail(userRequest.getEmailId());
     if (Objects.nonNull(user) && userRequest.getPassword().equals(user.getPassword())) {
       EmailDetails emailDetails = emailDetailsRepository.findByEmailType("LOGIN");
       try {
