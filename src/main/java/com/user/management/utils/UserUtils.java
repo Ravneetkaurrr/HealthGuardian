@@ -20,7 +20,7 @@ public class UserUtils {
   public static UserOtp createUserOtp(String otp, String email) {
     UserOtp userOtp = new UserOtp();
     userOtp.setOtp(otp);
-    userOtp.setEmail(email);
+    userOtp.setEmailId(email);
     LocalDateTime currentDateTime = LocalDateTime.now();
     userOtp.setCreatedDate(currentDateTime);
     userOtp.setExpiryDate(currentDateTime.plusMinutes(5));
@@ -32,7 +32,7 @@ public class UserUtils {
     user.setFirstName(userRequest.getFirstName());
     user.setLastName(userRequest.getLastName());
     user.setAddress(userRequest.getAddress());
-    user.setEmail(userRequest.getEmailId());
+    user.setEmailId(userRequest.getEmailId());
     user.setPhoneNo(userRequest.getPhoneNo());
     user.setStatus(UserStatus.PENDING);
     try {
@@ -45,9 +45,4 @@ public class UserUtils {
     user.setPassword(userRequest.getPassword());
     return user;
   }
-//  public static byte[] convertProfilePictureToBytes(MultipartFile profilePicture) throws IOException {
-//    try(InputStream inputStream= profilePicture.getInputStream()) {
-//      return inputStream.readAllBytes();
-//      }
-//  }
 }

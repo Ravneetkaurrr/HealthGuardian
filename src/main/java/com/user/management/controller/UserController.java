@@ -17,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -99,13 +96,7 @@ public class  UserController {
   public ResponseEntity<UserResponse>deleteProfilePicture(@PathVariable String emailId){
     return new ResponseEntity<UserResponse>(userService.deleteProfilePicture(emailId),HttpStatus.OK);
   }
-//@GetMapping("/login-by-gmail")
-//public ResponseEntity<UserResponse> loginByGmail(@AuthenticationPrincipal OAuth2User principal) {
-//  if (principal == null) {
-//    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//  }
-//  return ResponseEntity.ok(userService.loginByGmail((OAuth2AuthenticationToken) principal));
-//}
+
 
 }
 

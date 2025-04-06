@@ -6,7 +6,7 @@ public class UserVerification {
     @Id
     private String id;
     private String otp;
-    private String email;
+    private String emailId;
 
     public String getId() {
         return id;
@@ -24,11 +24,11 @@ public class UserVerification {
         this.otp = otp;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 }

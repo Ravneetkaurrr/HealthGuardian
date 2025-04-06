@@ -43,13 +43,12 @@ public class OtpService {
 
   public UserResponse verifyOtp(String otp, String emailId, String verificationType) {
     UserResponse userResponse = new UserResponse();
-    String type;
     UserOtp userOtp = otpRepository.findByOtp(otp);
     if (Objects.nonNull(userOtp)) {
       if (userOtp.getExpiryTime().isBefore(LocalDateTime.now())) {
         throw new VerificationException("Time expired");
       }
-      User user = userRepository.findByEmail(emailId);
+      User user = userRepository.findByEmailId(emailId);
       if (Objects.nonNull(user)) {
         user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);

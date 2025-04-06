@@ -12,7 +12,7 @@ public class UserOtp {
     @Id
     private String Id;
     private String otp;
-    private String email;
+    private String emailId;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
@@ -34,12 +34,12 @@ public class UserOtp {
         this.otp = otp;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 
     public LocalDateTime getCreatedDate() {

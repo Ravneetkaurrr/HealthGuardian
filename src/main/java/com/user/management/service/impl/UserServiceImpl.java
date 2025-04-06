@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
   public UserResponse registerUser(UserRequest userRequest) throws IOException {
     UserResponse userResponse = new UserResponse();
     //validateUser(userRequest);
-    if (Objects.nonNull(userRepository.findByEmail(userRequest.getEmailId()))
+    if (Objects.nonNull(userRepository.findByEmailId(userRequest.getEmailId()))
         || Objects.nonNull(userRepository.findByPhoneNo(userRequest.getPhoneNo()))) {
       throw new ValidationException("Email or Phone number already in use");
     }
@@ -67,11 +67,11 @@ public class UserServiceImpl implements UserService {
     user.setUserId(UUID.randomUUID().toString());
     user = userRepository.save(user);
     String otp = otpService.generateOtp();
-    UserOtp userOtp = UserUtils.createUserOtp(otp, user.getEmail());
+    UserOtp userOtp = UserUtils.createUserOtp(otp, user.getEmailId());
     otpService.saveOtp(userOtp);
     EmailDetails emailDetails = emailDetailsRepository.findByEmailType("REGISTRATION");
     try {
-      emailService.sendEmail(user.getEmail(), emailDetails.getEmailSubject(),
+      emailService.sendEmail(user.getEmailId(), emailDetails.getEmailSubject(),
           emailDetails.getEmailBody().replace("${FIRST_NAME}", user.getFirstName())
               .replace("${OTP}", otp));
     } catch (MessagingException e) {
@@ -90,11 +90,11 @@ public class UserServiceImpl implements UserService {
     }
 
     UserResponse userResponse = new UserResponse();
-    User user = userRepository.findByEmail(userRequest.getEmailId());
+    User user = userRepository.findByEmailId(userRequest.getEmailId());
     if (Objects.nonNull(user) && userRequest.getPassword().equals(user.getPassword())) {
       EmailDetails emailDetails = emailDetailsRepository.findByEmailType("LOGIN");
       try {
-        emailService.sendEmail(user.getEmail(), emailDetails.getEmailSubject(),
+        emailService.sendEmail(user.getEmailId(), emailDetails.getEmailSubject(),
             emailDetails.getEmailBody().replace("${FIRST_NAME}", user.getFirstName()));
       } catch (MessagingException e) {
         throw new RuntimeException(e);
@@ -107,28 +107,6 @@ public class UserServiceImpl implements UserService {
     }
 
   }
-//  @Override
-//  public UserResponse loginByGmail(OAuth2AuthenticationToken token) {
-//    UserResponse userResponse=new UserResponse();
-//    OAuth2User auth2User=token.getPrincipal();
-//    String name=auth2User.getAttribute("name");
-//    String emailId=auth2User.getAttribute("emailId");
-//    User user =userRepository.findByEmail(emailId);
-//    if(Objects.isNull(user)){
-//      throw new RuntimeException("Invalid emailId");
-//    }
-//    EmailDetails emailDetails = emailDetailsRepository.findByEmailType("LOGIN");
-//    try {
-//      emailService.sendEmail(user.getEmail(), emailDetails.getEmailSubject(),
-//          emailDetails.getEmailBody().replace("${FIRST_NAME}", user.getFirstName()));
-//    } catch (MessagingException e) {
-//      throw new RuntimeException(e);
-//    }
-//    userResponse.setMessage("User has been successfully logged in !!!");
-//    userResponse.setUserId(user.getUserId());
-//    return userResponse;
-//  }
-
 
   @Override
   public UserResponse generateOtpByEmailId(String emailId) {
@@ -136,10 +114,10 @@ public class UserServiceImpl implements UserService {
     if (Objects.isNull(emailId)) {
       throw new IllegalArgumentException("Please enter valid emailId");
     }
-    User user = userRepository.findByEmail(emailId);
+    User user = userRepository.findByEmailId(emailId);
     if (Objects.nonNull(user)) {
       String otp = otpService.generateOtp();
-      UserOtp userOtp = UserUtils.createUserOtp(otp, user.getEmail());
+      UserOtp userOtp = UserUtils.createUserOtp(otp, user.getEmailId());
       otpService.saveOtp(userOtp);
       EmailDetails emailDetails = emailDetailsRepository.findByEmailType("GENERATE_OTP");
       try {
@@ -164,7 +142,7 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("Invalid emailId or password");
     }
 
-    User user = userRepository.findByEmail(passwordRequest.getEmailId());
+    User user = userRepository.findByEmailId(passwordRequest.getEmailId());
     if (Objects.nonNull(user)) {
       if (passwordRequest.getOldPassword().equals(user.getPassword())
           && !passwordRequest.getOldPassword().equals(passwordRequest.getNewPassword())) {
@@ -185,7 +163,7 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("invalid password or emailId");
     }
     UserResponse userResponse = new UserResponse();
-    User user = userRepository.findByEmail(passwordRequest.getEmailId());
+    User user = userRepository.findByEmailId(passwordRequest.getEmailId());
     if (Objects.nonNull(user)) {
       user.setPassword(passwordRequest.getNewPassword());
       userRepository.save(user);
@@ -202,7 +180,7 @@ public class UserServiceImpl implements UserService {
 
     UserResponse userResponse = new UserResponse();
 
-    User user = userRepository.findByEmail(userStatusRequest.getEmailId());
+    User user = userRepository.findByEmailId(userStatusRequest.getEmailId());
     if (user.getStatus().name().equals(userStatusRequest.getStatus())) {
       userResponse.setMessage(
           "Status can't be updated as status is already " + user.getStatus().name());
@@ -218,14 +196,14 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponse updateUser(UserUpdateRequest updateUserRequest) {
     UserResponse userResponse = new UserResponse();
-    User user = userRepository.findByEmail(updateUserRequest.getEmailId());//can we use find by id?
+    User user = userRepository.findByEmailId(updateUserRequest.getEmailId());//can we use find by id?
     if (Objects.isNull(user)) {
       throw new IllegalArgumentException("Invalid emailId");
     }
     Optional.ofNullable(updateUserRequest.getFirstName()).ifPresent(
         user::setFirstName); //The :: (method reference operator) is a shortcut to refer to methods without writing a lambda expression.
     Optional.ofNullable(updateUserRequest.getLastName()).ifPresent(user::setLastName);
-    Optional.ofNullable(updateUserRequest.getEmailId()).ifPresent(user::setEmail);
+    Optional.ofNullable(updateUserRequest.getEmailId()).ifPresent(user::setEmailId);
     Optional.ofNullable(updateUserRequest.getPhoneNo()).ifPresent(user::setPhoneNo);
     Optional.ofNullable(UserUpdateRequest.getDob())
         .map(dob -> LocalDate.parse(dob,
@@ -247,7 +225,7 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("emailId or profile picture cannot be null");
     }
     UserResponse userResponse= new UserResponse();
-    User user = userRepository.findByEmail(emailId);
+    User user = userRepository.findByEmailId(emailId);
     if(Objects.isNull(user)){
       throw new IllegalArgumentException("Invalid emailId or profile picture");
     }
@@ -259,7 +237,7 @@ public class UserServiceImpl implements UserService {
     return userResponse;
   }
   public UserProfilePictureRequest getProfilePicture(String emailId) {
-    User user = userRepository.findByEmail(emailId);
+    User user = userRepository.findByEmailId(emailId);
     if (Objects.isNull(user)) {
       throw new RuntimeException("User not found");
     }
@@ -271,29 +249,13 @@ public class UserServiceImpl implements UserService {
     return new UserProfilePictureRequest(user.getProfilePicture(), user.getProfilePictureType());
   }
 
-
-
-//  @Override
-//  public byte[] getProfilePicture(String emailId) {
-//    if(Objects.isNull(emailId)){
-//      throw new IllegalArgumentException("Invalid emailId");
-//    }
-//    User user = userRepository.findByEmail(emailId);
-//    if(Objects.nonNull(user) && Objects.nonNull(user.getProfilePicture())){
-//      return user.getProfilePicture();
-//    }
-//    else{
-//      throw new IllegalArgumentException("Invalid emailId Profile Picture not found");
-//    }
-//  }
-
   @Override
   public UserResponse deleteProfilePicture(String emailId) {
     if (Objects.isNull(emailId)) {
       throw new IllegalArgumentException("Please enter a valid emailId");
     }
 
-    User user = userRepository.findByEmail(emailId);
+    User user = userRepository.findByEmailId(emailId);
     if (Objects.nonNull(user)) {
       user.setProfilePicture(null);
       user.setProfilePictureType(null); // Clear MIME type
@@ -311,34 +273,4 @@ public class UserServiceImpl implements UserService {
   }
 
 
-//  private void validateUser(UserRequest userRequest) {
-//    List<String> errors = new ArrayList<>();
-//    if (Objects.isNull(userRequest.getFirstName())) {
-//      errors.add("First name cannot be empty");
-//    }
-//    if (Objects.isNull(userRequest.getDob())) {
-//      errors.add("DOB cannot be empty");
-//    }
-//    if (Objects.isNull(userRequest.getLastName())) {
-//      errors.add("Last name cannot be empty");
-//    }
-//    if (ObjectUtils.isEmpty(userRequest.getAddress())) {
-//      errors.add("Address cannot be empty");
-//    }
-//    if (Objects.isNull(userRequest.getEmail())) {
-//      errors.add("Email cannot be empty");
-//    }
-//    if (Objects.isNull(userRequest.getPhoneNo())) {
-//      errors.add("Phone number cannot be empty");
-//    }
-//    if (Objects.isNull(userRequest.getPassword())) {
-//      errors.add("Password cannot be empty");
-//    }
-////    if (ObjectUtils.isEmpty(userRequest.getProfilePicture())) {
-////      errors.add("Profile picture cannot be empty");
-////    }
-//    if (!errors.isEmpty()) {
-//      throw new ValidationException(errors);
-//    }
-//  }
 }
