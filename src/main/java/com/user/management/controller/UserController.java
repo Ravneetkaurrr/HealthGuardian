@@ -12,7 +12,6 @@ import com.user.management.service.OtpService;
 import com.user.management.service.UserService;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
